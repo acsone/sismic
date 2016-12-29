@@ -12,7 +12,7 @@ from sismic.exceptions import (ConflictingTransitionsError, InvariantError,
 __all__ = ['Interpreter']
 
 
-class Interpreter:
+class Interpreter(object):
     """
     A discrete interpreter that executes a statechart according to a semantic close to SCXML.
 

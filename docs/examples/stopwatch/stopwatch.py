@@ -1,4 +1,4 @@
-class Stopwatch:
+class Stopwatch(object):
     def __init__(self):
         self.elapsed_time = 0
         self.split_time = 0

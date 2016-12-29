@@ -10,7 +10,7 @@ from .elements import (CompositeStateMixin, CompoundState, HistoryStateMixin,
 __all__ = ['Statechart']
 
 
-class Statechart:
+class Statechart(object):
     """
     Python structure for a statechart
 

@@ -32,7 +32,7 @@ def _teststory_from_macrostep(macrostep):
     return story
 
 
-class ExecutionWatcher:
+class ExecutionWatcher(object):
     """
     This can be used to associate a property statechart with a statechart under test.
     An instance of this class is built upon an *Interpreter* instance (the tested one).
@@ -58,7 +58,7 @@ class ExecutionWatcher:
 
         self._tested_execute_once_function = tested_interpreter.execute_once
 
-    class DynamicContext:
+    class DynamicContext(object):
         def __init__(self, interpreter):
             # type: (Interpreter) -> None
             self.__interpreter = interpreter

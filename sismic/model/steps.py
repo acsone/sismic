@@ -6,7 +6,7 @@ from .events import Event
 __all__ = ['MicroStep', 'MacroStep']
 
 
-class MicroStep:
+class MicroStep(object):
     """
     Create a micro step.
 
@@ -47,7 +47,7 @@ class MicroStep:
         return '{}({})'.format(self.__class__.__name__, ', '.join(params))
 
 
-class MacroStep:
+class MacroStep(object):
     """
     A macro step is a list of micro steps.
 

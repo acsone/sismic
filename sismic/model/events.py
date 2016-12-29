@@ -1,7 +1,7 @@
 from typing import Any
 
 
-class Event:
+class Event(object):
     """
     Simple event with a name and (optionally) some data.
     Unless the attribute already exists, each key from *data* is exposed as an attribute

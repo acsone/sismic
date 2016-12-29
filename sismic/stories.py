@@ -10,7 +10,7 @@ __all__ = ['Pause', 'Story', 'random_stories_generator', 'story_from_trace']
 Tellable = Union[Event, 'Pause']
 
 
-class Pause:
+class Pause(object):
     """
     A convenience class to represent pause, ie. delay between sent events.
 
