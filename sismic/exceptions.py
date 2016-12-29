@@ -52,7 +52,7 @@ class ContractError(SismicError):
     __slots__ = ['_configuration', '_step', '_obj', '_assertion', '_context']
 
     def __init__(self, configuration=None, step=None, obj=None, assertion=None, context=None):
-        super().__init__(self)
+        super(ContractError, self).__init__(self)
         self._configuration = configuration
         self._step = step
         self._obj = obj

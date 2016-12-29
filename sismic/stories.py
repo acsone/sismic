@@ -81,7 +81,7 @@ class Story(list):
             yield item, interpreter.execute(*args, **kwargs)
 
     def __repr__(self):
-        return 'Story({})'.format(super().__repr__())
+        return 'Story({})'.format(super(Story, self).__repr__())
 
 
 def random_stories_generator(items,

@@ -13,7 +13,7 @@ class DummyEvaluator(Evaluator):
     """
 
     def __init__(self, interpreter=None, initial_context=None):
-        super().__init__(interpreter, initial_context=initial_context)
+        super(DummyEvaluator, self).__init__(interpreter, initial_context=initial_context)
 
     @property
     def context(self):

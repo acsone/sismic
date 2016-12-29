@@ -18,7 +18,7 @@ sys.path.append('../../..')
 # Create a tiny GUI
 class MicrowaveApplication(tk.Frame):
     def __init__(self, master=None):
-        super().__init__(master)
+        super(MicrowaveApplication, self).__init__(master)
 
         # Initialize widgets
         self.create_widgets()

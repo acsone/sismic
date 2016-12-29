@@ -1,5 +1,9 @@
 import unittest
-from unittest.mock import MagicMock
+try:
+    from unittest.mock import MagicMock
+except ImportError:
+    # python 2
+    from mock import MagicMock
 
 from sismic import code
 from sismic.code.python import Context, FrozenContext

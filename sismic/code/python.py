@@ -187,7 +187,7 @@ class PythonEvaluator(Evaluator):
 
     def __init__(self, interpreter=None, initial_context=None):
         # type: (Any, Mapping[str, Any]) -> None
-        super().__init__(interpreter, initial_context=initial_context)
+        super(PythonEvaluator, self).__init__(interpreter, initial_context=initial_context)
 
         self._context = Context(initial_context)
         self._interpreter = interpreter

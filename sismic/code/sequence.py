@@ -65,7 +65,7 @@ class SequenceBinaryOperator(Sequence):
 class SequenceCondition(SequenceItem):
     def __init__(self, code, eval_func=None):
         # type: (str, Callable[[str], bool]) -> None
-        super().__init__()
+        super(SequenceCondition, self).__init__()
         self.code = code
         self._eval_func = eval_func if eval_func else eval
 
@@ -76,13 +76,13 @@ class SequenceCondition(SequenceItem):
         return '%s(%s)' % (self.__class__.__name__, self.code)
 
     def __eq__(self, other):
-        return super().__eq__(other) and self.code == other.code
+        return super(SequenceCondition, self).__eq__(other) and self.code == other.code
 
 
 class SequenceTimedCondition(SequenceItem):
     def __init__(self, *truth):
         # type: (*bool) -> None
-        super().__init__()
+        super(SequenceTimedCondition, self).__init__()
         self._truth = (t for t in truth)
 
     def evaluate(self, force=False):
@@ -110,7 +110,7 @@ class SequenceFinish(SequenceItem):
 class SequenceSometimes(SequenceUnaryOperator):
     def __init__(self, sequence):
         # type: (Sequence) -> None
-        super().__init__(sequence)
+        super(SequenceSometimes, self).__init__(sequence)
         self._satisfied = False
 
     def evaluate(self, force=False):
@@ -133,7 +133,7 @@ class SequenceNegate(SequenceUnaryOperator):
 class SequenceAlways(SequenceUnaryOperator):
     def __init__(self, sequence):
         # type: (Sequence) -> None
-        super().__init__(sequence)
+        super(SequenceAlways, self).__init__(sequence)
         self._unsatisfied = False
 
     def evaluate(self, force=False):
@@ -151,7 +151,7 @@ class SequenceAlways(SequenceUnaryOperator):
 class SequenceNever(SequenceUnaryOperator):
     def __init__(self, sequence):
         # type: (Sequence) -> None
-        super().__init__(sequence)
+        super(SequenceNever, self).__init__(sequence)
         self._satisfied = False
 
     def evaluate(self, force=False):
@@ -198,7 +198,7 @@ class SequenceOr(SequenceBinaryOperator):
 class SequenceThen(SequenceBinaryOperator):
     def __init__(self, left_sequence, right_sequence):
         # type: (Sequence, Sequence) -> None
-        super().__init__(left_sequence, right_sequence)
+        super(SequenceThen, self).__init__(left_sequence, right_sequence)
         self._left_satisfied = False
 
     def evaluate(self, force=False):
