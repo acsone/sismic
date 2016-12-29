@@ -1,6 +1,8 @@
 import abc
 from typing import Any, Dict, Iterable, List, Mapping, cast
 
+from future.utils import with_metaclass
+
 from sismic.model import (ActionStateMixin, Event, Statechart, StateMixin,
                           Transition)
 
@@ -9,7 +11,7 @@ from .sequence import Sequence, build_sequence
 __all__ = ['Evaluator']
 
 
-class Evaluator(metaclass=abc.ABCMeta):
+class Evaluator(with_metaclass(abc.ABCMeta)):
     """
     Abstract base class for any evaluator.
 

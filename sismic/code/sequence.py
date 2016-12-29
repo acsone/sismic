@@ -2,11 +2,12 @@ import abc
 from functools import partial, reduce
 from typing import Callable, List, Optional
 
+from future.utils import with_metaclass
 import pyparsing  # type: ignore
 from sismic.exceptions import StatechartError
 
 
-class Sequence(metaclass=abc.ABCMeta):
+class Sequence(with_metaclass(abc.ABCMeta)):
     @abc.abstractmethod
     def evaluate(self, force=False):
         # type: (bool) -> Optional[bool]

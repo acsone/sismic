@@ -1,12 +1,14 @@
 from abc import ABCMeta
 from typing import List
 
+from future.utils import with_metaclass
+
 __all__ = ['ContractMixin', 'StateMixin', 'ActionStateMixin', 'TransitionStateMixin', 'CompositeStateMixin',
            'HistoryStateMixin', 'BasicState', 'CompoundState', 'OrthogonalState', 'ShallowHistoryState',
            'DeepHistoryState']
 
 
-class ContractMixin(metaclass=ABCMeta):
+class ContractMixin(with_metaclass(ABCMeta)):
     """
     Mixin with a contract: preconditions, postconditions, invariants and sequences.
     """
@@ -19,7 +21,7 @@ class ContractMixin(metaclass=ABCMeta):
         self.sequences = []  # type: List[str]
 
 
-class StateMixin(metaclass=ABCMeta):
+class StateMixin(with_metaclass(ABCMeta)):
     """
     State element with a name.
 
@@ -44,7 +46,7 @@ class StateMixin(metaclass=ABCMeta):
         return hash(self.name)
 
 
-class ActionStateMixin(metaclass=ABCMeta):
+class ActionStateMixin(with_metaclass(ABCMeta)):
     """
     State that can define actions on entry and on exit.
 
@@ -58,21 +60,21 @@ class ActionStateMixin(metaclass=ABCMeta):
         self.on_exit = on_exit
 
 
-class TransitionStateMixin(metaclass=ABCMeta):
+class TransitionStateMixin(with_metaclass(ABCMeta)):
     """
     A simple state can host transitions
     """
     pass
 
 
-class CompositeStateMixin(metaclass=ABCMeta):
+class CompositeStateMixin(with_metaclass(ABCMeta)):
     """
     Composite state can have children states.
     """
     pass
 
 
-class HistoryStateMixin(metaclass=ABCMeta):
+class HistoryStateMixin(with_metaclass(ABCMeta)):
     """
     History state has a memory that can be resumed.
 
