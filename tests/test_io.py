@@ -1,5 +1,5 @@
 import os
-import unittest
+import unittest2 as unittest
 
 from schema import SchemaError
 from sismic import exceptions, io
