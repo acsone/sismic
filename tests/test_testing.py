@@ -4,7 +4,7 @@ from sismic import io
 from sismic.interpreter import Interpreter
 from sismic.model import MacroStep, MicroStep, Transition
 from sismic.stories import Event, Pause, Story
-from sismic.testing import teststory_from_trace
+from sismic.testing import teststory_from_trace as make_teststory_from_trace
 from sismic.testing.tester import ExecutionWatcher
 
 
@@ -15,7 +15,7 @@ class StoryFromTraceTests(unittest.TestCase):
         interpreter = Interpreter(sc)
 
         trace = Story([Pause(2), Event('goto s2'), Pause(3)]).tell(interpreter)
-        story = teststory_from_trace(trace)
+        story = make_teststory_from_trace(trace)
 
         expected = Story([
             Event('execution started'),
@@ -47,123 +47,123 @@ class StoryFromTraceTests(unittest.TestCase):
 
 class AtomicStoryFromTraceTests(unittest.TestCase):
     def test_execution_started(self):
-        story = teststory_from_trace([])
+        story = make_teststory_from_trace([])
         self.assertIn(Event('execution started'), story)
 
-        story = teststory_from_trace([MacroStep(0, [])])
+        story = make_teststory_from_trace([MacroStep(0, [])])
         self.assertIn(Event('execution started'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep()])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep()])])
         self.assertIn(Event('execution started'), story)
 
     def test_execution_stopped(self):
-        story = teststory_from_trace([])
+        story = make_teststory_from_trace([])
         self.assertIn(Event('execution stopped'), story)
 
-        story = teststory_from_trace([MacroStep(0, [])])
+        story = make_teststory_from_trace([MacroStep(0, [])])
         self.assertIn(Event('execution stopped'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep()])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep()])])
         self.assertIn(Event('execution stopped'), story)
 
     def test_step_started(self):
-        story = teststory_from_trace([])
+        story = make_teststory_from_trace([])
         self.assertNotIn(Event('step started'), story)
 
-        story = teststory_from_trace([MacroStep(0, [])])
+        story = make_teststory_from_trace([MacroStep(0, [])])
         self.assertIn(Event('step started'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep()])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep()])])
         self.assertIn(Event('step started'), story)
 
     def test_step_ended(self):
-        story = teststory_from_trace([])
+        story = make_teststory_from_trace([])
         self.assertNotIn(Event('step ended'), story)
 
-        story = teststory_from_trace([MacroStep(0, [])])
+        story = make_teststory_from_trace([MacroStep(0, [])])
         self.assertIn(Event('step ended'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep()])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep()])])
         self.assertIn(Event('step ended'), story)
 
     def test_event_consumed(self):
-        story = teststory_from_trace([])
+        story = make_teststory_from_trace([])
         self.assertNotIn(Event('event consumed'), story)
 
-        story = teststory_from_trace([MacroStep(0, [])])
+        story = make_teststory_from_trace([MacroStep(0, [])])
         self.assertNotIn(Event('event consumed'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep()])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep()])])
         self.assertNotIn(Event('event consumed'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep(event=Event('a'))])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep(event=Event('a'))])])
         self.assertIn(Event('event consumed', event=Event('a')), story)
 
     def test_state_entered(self):
-        story = teststory_from_trace([])
+        story = make_teststory_from_trace([])
         self.assertNotIn(Event('state entered'), story)
 
-        story = teststory_from_trace([MacroStep(0, [])])
+        story = make_teststory_from_trace([MacroStep(0, [])])
         self.assertNotIn(Event('state entered'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep()])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep()])])
         self.assertNotIn(Event('state entered'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep(entered_states=['a'])])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep(entered_states=['a'])])])
         self.assertIn(Event('state entered', state='a'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep(entered_states=['a', 'b'])])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep(entered_states=['a', 'b'])])])
         self.assertIn(Event('state entered', state='a'), story)
         self.assertIn(Event('state entered', state='b'), story)
         self.assertLess(story.index(Event('state entered', state='a')),
                         story.index(Event('state entered', state='b')))
 
     def test_state_exited(self):
-        story = teststory_from_trace([])
+        story = make_teststory_from_trace([])
         self.assertNotIn(Event('state exited'), story)
 
-        story = teststory_from_trace([MacroStep(0, [])])
+        story = make_teststory_from_trace([MacroStep(0, [])])
         self.assertNotIn(Event('state exited'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep()])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep()])])
         self.assertNotIn(Event('state exited'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep(exited_states=['a'])])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep(exited_states=['a'])])])
         self.assertIn(Event('state exited', state='a'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep(exited_states=['a', 'b'])])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep(exited_states=['a', 'b'])])])
         self.assertIn(Event('state exited', state='a'), story)
         self.assertIn(Event('state exited', state='b'), story)
         self.assertLess(story.index(Event('state exited', state='a')),
                         story.index(Event('state exited', state='b')))
 
     def test_transition_processed(self):
-        story = teststory_from_trace([])
+        story = make_teststory_from_trace([])
         self.assertNotIn(Event('transition processed'), story)
 
-        story = teststory_from_trace([MacroStep(0, [])])
+        story = make_teststory_from_trace([MacroStep(0, [])])
         self.assertNotIn(Event('transition processed'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep()])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep()])])
         self.assertNotIn(Event('transition processed'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep(event=Event('c'), transition=Transition('a', 'b', event='c'))])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep(event=Event('c'), transition=Transition('a', 'b', event='c'))])])
         self.assertIn(Event('transition processed', source='a', target='b', event=Event('c')), story)
 
     def test_event_sent(self):
-        story = teststory_from_trace([])
+        story = make_teststory_from_trace([])
         self.assertNotIn(Event('event sent'), story)
 
-        story = teststory_from_trace([MacroStep(0, [])])
+        story = make_teststory_from_trace([MacroStep(0, [])])
         self.assertNotIn(Event('event sent'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep()])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep()])])
         self.assertNotIn(Event('event sent'), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep(sent_events=[Event('a')])])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep(sent_events=[Event('a')])])])
         self.assertIn(Event('event sent', event=Event('a')), story)
 
-        story = teststory_from_trace([MacroStep(0, [MicroStep(sent_events=[Event('a'), Event('b')])])])
+        story = make_teststory_from_trace([MacroStep(0, [MicroStep(sent_events=[Event('a'), Event('b')])])])
         self.assertIn(Event('event sent', event=Event('a')), story)
         self.assertIn(Event('event sent', event=Event('b')), story)
         self.assertLess(story.index(Event('event sent', event=Event('a'))),
@@ -180,7 +180,7 @@ class ElevatorStoryTests(unittest.TestCase):
         story = Story([Event('floorSelected', floor=8)])
         trace = story.tell(self.tested)  # self.tested is an interpreter for our elevator
 
-        test_story = teststory_from_trace(trace)
+        test_story = make_teststory_from_trace(trace)
 
         with open('docs/examples/elevator/tester_elevator_7th_floor_never_reached.yaml') as f:
             tester = Interpreter(io.import_from_yaml(f))
@@ -191,7 +191,7 @@ class ElevatorStoryTests(unittest.TestCase):
         story = Story([Event('floorSelected', floor=4), Pause(2), Event('floorSelected', floor=7)])
         trace = story.tell(self.tested)  # self.tested is an interpreter for our elevator
 
-        test_story = teststory_from_trace(trace)
+        test_story = make_teststory_from_trace(trace)
 
         with open('docs/examples/elevator/tester_elevator_7th_floor_never_reached.yaml') as f:
             tester = Interpreter(io.import_from_yaml(f))
@@ -215,7 +215,7 @@ class ElevatorStoryTests(unittest.TestCase):
                     sc = io.import_from_yaml(f)
                 tested = Interpreter(sc)
 
-                test_story = teststory_from_trace(story.tell(tested))
+                test_story = make_teststory_from_trace(story.tell(tested))
 
                 with open('docs/examples/elevator/tester_elevator_moves_after_10s.yaml') as f:
                     tester = Interpreter(io.import_from_yaml(f))
