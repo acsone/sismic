@@ -234,7 +234,7 @@ class PythonEvaluator(Evaluator):
 
         :param event: Optional processed event
         """
-        self._sents_events.clear()
+        self._sents_events[:] = []
         self._received_event = event
 
     def context_for(self, name):
