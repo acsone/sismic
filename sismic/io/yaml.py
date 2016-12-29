@@ -1,4 +1,5 @@
 from typing import Iterable
+from future.utils import raise_from
 
 import ruamel.yaml as yaml
 import schema
@@ -63,7 +64,7 @@ def import_from_yaml(statechart, ignore_schema=False, ignore_validation=False):
         try:
             data = schema.Schema(SCHEMA.statechart).validate(data)
         except schema.SchemaError as e:
-            raise StatechartError('YAML validation failed') from e
+            raise_from(StatechartError('YAML validation failed'), e)
 
     sc = import_from_dict(data)
 

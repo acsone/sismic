@@ -1,5 +1,6 @@
 from copy import deepcopy
 from typing import Callable, Dict, Iterable, List, Optional, Union, cast
+from future.utils import raise_from
 
 from sismic.exceptions import StatechartError
 
@@ -72,7 +73,7 @@ class Statechart:
         try:
             return self._states[name]
         except KeyError as e:
-            raise StatechartError('State {} does not exist'.format(name)) from e
+            raise_from(StatechartError('State {} does not exist'.format(name)), e)
 
     def parent_for(self, name):
         # type: (str) -> str
@@ -86,7 +87,7 @@ class Statechart:
         try:
             return self._parent[name]
         except KeyError as e:
-            raise StatechartError('State {} does not exist'.format(name)) from e
+            raise_from(StatechartError('State {} does not exist'.format(name)), e)
 
     def children_for(self, name):
         # type: (str) -> List[str]
@@ -219,7 +220,7 @@ class Statechart:
         try:
             from_state = self.state_for(transition.source)
         except StatechartError as e:
-            raise StatechartError('Unknown source state for {}'.format(transition)) from e
+            raise_from(StatechartError('Unknown source state for {}'.format(transition)), e)
 
         # Check that source state is a TransactionStateMixin
         if not isinstance(from_state, TransitionStateMixin):
@@ -574,8 +575,8 @@ class Statechart:
                 try:
                     self.add_transition(transition)
                 except StatechartError as e:
-                    raise StatechartError('Cannot copy {} because transition {} is not contained in {}'.
-                                          format(transition.source, transition, source)) from e
+                    raise_from(StatechartError('Cannot copy {} because transition {} is not contained in {}'.
+                                               format(transition.source, transition, source)), e)
 
     # ######### VALIDATION ##########
 

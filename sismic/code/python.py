@@ -5,6 +5,7 @@ from itertools import chain
 from types import CodeType
 from typing import (Any, Callable, Dict, Iterator, List, Mapping,
                     MutableMapping, cast)
+from future.utils import raise_from
 
 from sismic.exceptions import CodeEvaluationError
 from sismic.model import (Event, InternalEvent, Statechart, StateMixin,
@@ -322,7 +323,7 @@ class PythonEvaluator(Evaluator):
         try:
             return eval(compiled_code, exposed_context, context)  # type: ignore
         except Exception as e:
-            raise CodeEvaluationError('The above exception occurred while evaluating:\n{}'.format(code)) from e
+            raise_from(CodeEvaluationError('The above exception occurred while evaluating:\n{}'.format(code)), e)
 
     def _execute_code(self, code, *, additional_context=None, context=None):
         # type: (str, Mapping, Mapping) -> List[Event]
@@ -357,7 +358,7 @@ class PythonEvaluator(Evaluator):
             exec(compiled_code, exposed_context, context)  # type: ignore
             return sent_events
         except Exception as e:
-            raise CodeEvaluationError('The above exception occurred while executing:\n{}'.format(code)) from e
+            raise_from(CodeEvaluationError('The above exception occurred while executing:\n{}'.format(code)), e)
 
     def execute_statechart(self, statechart):
         # type: (Statechart) -> List[Event]

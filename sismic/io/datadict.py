@@ -1,5 +1,6 @@
 from collections import OrderedDict
 from typing import Any, List, Mapping, MutableMapping, Optional, Tuple, cast
+from future.utils import raise_from
 
 from sismic.exceptions import StatechartError
 from sismic.model import (ActionStateMixin, BasicState, CompositeStateMixin,
@@ -32,7 +33,7 @@ def import_from_dict(data):
         except StatechartError:
             raise
         except Exception as e:
-            raise StatechartError('Unable to load given YAML') from e
+            raise_from(StatechartError('Unable to load given YAML'), e)
         states.append((state, parent_name))
 
         # Get substates
@@ -50,7 +51,7 @@ def import_from_dict(data):
             except StatechartError:
                 raise
             except Exception as e:
-                raise StatechartError('Unable to load given YAML') from e
+                raise_from(StatechartError('Unable to load given YAML'), e)
             transitions.append(transition)
 
     # Register on statechart

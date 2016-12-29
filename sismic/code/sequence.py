@@ -1,8 +1,8 @@
 import abc
 from functools import partial, reduce
 from typing import Callable, List, Optional
+from future.utils import with_metaclass, raise_from
 
-from future.utils import with_metaclass
 import pyparsing  # type: ignore
 from sismic.exceptions import StatechartError
 
@@ -288,4 +288,4 @@ def build_sequence(expression, evaluation_function=eval):
     try:
         return expr.parseString(expression, parseAll=True)[0]
     except pyparsing.ParseBaseException as e:
-        raise StatechartError('Invalid sequential condition:\n%s' % expression) from e
+        raise_from(StatechartError('Invalid sequential condition:\n%s' % expression), e)
