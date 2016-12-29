@@ -185,7 +185,7 @@ class PythonEvaluator(Evaluator):
     :param initial_context: a dictionary that will be used as *__locals__*
     """
 
-    def __init__(self, interpreter=None, *, initial_context=None):
+    def __init__(self, interpreter=None, initial_context=None):
         # type: (Any, Mapping[str, Any]) -> None
         super().__init__(interpreter, initial_context=initial_context)
 
@@ -295,7 +295,7 @@ class PythonEvaluator(Evaluator):
         """
         return self._interpreter.time - seconds >= self._idle_time[name]
 
-    def _evaluate_code(self, code, *, additional_context=None, context=None):
+    def _evaluate_code(self, code, additional_context=None, context=None):
         # type: (str, Mapping, Mapping) -> bool
         """
         Evaluate given code using Python.
@@ -325,7 +325,7 @@ class PythonEvaluator(Evaluator):
         except Exception as e:
             raise_from(CodeEvaluationError('The above exception occurred while evaluating:\n{}'.format(code)), e)
 
-    def _execute_code(self, code, *, additional_context=None, context=None):
+    def _execute_code(self, code, additional_context=None, context=None):
         # type: (str, Mapping, Mapping) -> List[Event]
         """
         Execute given code using Python.

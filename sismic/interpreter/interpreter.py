@@ -25,7 +25,7 @@ class Interpreter:
     :param ignore_contract: set to True to ignore contract checking during the execution.
     """
 
-    def __init__(self, statechart, *,
+    def __init__(self, statechart,
                  evaluator_klass=PythonEvaluator,
                  initial_context=None,
                  ignore_contract=False):

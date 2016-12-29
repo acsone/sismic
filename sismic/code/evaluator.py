@@ -27,7 +27,7 @@ class Evaluator(with_metaclass(abc.ABCMeta)):
     :param initial_context: an optional dictionary to populate the context
     """
     @abc.abstractmethod
-    def __init__(self, interpreter=None, *, initial_context=None):
+    def __init__(self, interpreter=None, initial_context=None):
         # type: (Any, Mapping[str, Any]) -> None
         self._condition_sequences = {}  # type: Dict[str, Dict[str, Sequence]]
 
@@ -51,7 +51,7 @@ class Evaluator(with_metaclass(abc.ABCMeta)):
         pass
 
     @abc.abstractmethod
-    def _evaluate_code(self, code, *, additional_context=None):
+    def _evaluate_code(self, code, additional_context=None):
         # type: (str, Mapping[str, Any]) -> bool
         """
         Generic method to evaluate a piece of code. This method is a fallback if one of
@@ -64,7 +64,7 @@ class Evaluator(with_metaclass(abc.ABCMeta)):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def _execute_code(self, code, *, additional_context=None):
+    def _execute_code(self, code, additional_context=None):
         # type: (str, Mapping[str, Any]) -> List[Event]
         """
         Generic method to execute a piece of code. This method is a fallback if one

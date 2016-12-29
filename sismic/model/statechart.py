@@ -532,7 +532,7 @@ class Statechart:
                     other_state.memory = None
 
     def copy_from_statechart(self, statechart, source,
-                             *, replace, renaming_func=lambda s: s):
+                             replace, renaming_func=lambda s: s):
         # type: ('Statechart', str, str, Callable[[str], str]) -> None
         """
         Copy (a part of) given *statechart* into current one.
