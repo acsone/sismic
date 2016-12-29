@@ -1,5 +1,5 @@
 import random
-from typing import Generator, Iterable, List, Sequence, Tuple, Union
+from typing import Any, Generator, Iterable, List, Sequence, Tuple, Union
 
 from sismic.interpreter import Interpreter
 from sismic.model import Event, InternalEvent
@@ -16,11 +16,13 @@ class Pause:
 
     :param duration: the duration of this pause
     """
-    def __init__(self, duration: float) -> None:
+    def __init__(self, duration):
+        # type: (float) -> None
         self._duration = duration
 
     @property
-    def duration(self) -> float:
+    def duration(self):
+        # type: () -> float
         """
         The duration of this pause
         """
@@ -38,7 +40,8 @@ class Story(list):
     A story is a sequence of *Event* and *Pause*.
 
     """
-    def tell(self, interpreter: Interpreter, *args, **kwargs) -> List[MacroStep]:
+    def tell(self, interpreter, *args, **kwargs):
+        # type: (Interpreter, *Any, **Any) -> List[MacroStep]
         """
         Tells the whole story to the interpreter.
 
@@ -58,7 +61,8 @@ class Story(list):
                 trace.extend(step)
         return trace
 
-    def tell_by_step(self, interpreter, *args, **kwargs) -> Generator[Tuple[Tellable, List[MacroStep]], None, None]:
+    def tell_by_step(self, interpreter, *args, **kwargs):
+        # type: (Interpreter, *Any, **Any) -> Generator[Tuple[Tellable, List[MacroStep]], None, None]
         """
         Tells the story to the interpreter, step by step.
         This method returns a generator which yields the event or the pause that was told to the interpreter and
@@ -80,9 +84,10 @@ class Story(list):
         return 'Story({})'.format(super().__repr__())
 
 
-def random_stories_generator(items: Sequence[Union[Event, Pause]],
-                             length: int=None,
-                             number: int=None) -> Generator[Story, None, None]:
+def random_stories_generator(items,
+                             length=None,
+                             number=None):
+    # type: (Sequence[Union[Event, Pause]], int, int) -> Generator[Story, None, None]
     """
     A generator that returns random stories whose elements come from *items*.
     Parameter *items* can be any iterable containing events and/or pauses.
@@ -102,7 +107,8 @@ def random_stories_generator(items: Sequence[Union[Event, Pause]],
         number -= 1
 
 
-def story_from_trace(trace: Iterable[MacroStep]) -> Story:
+def story_from_trace(trace):
+    # type: (Iterable[MacroStep]) -> Story
     """
     Return a story that is built upon the given trace (a list of macro steps).
 

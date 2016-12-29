@@ -23,7 +23,8 @@ class FrozenContext(collections.Mapping):
     """
     __slots__ = ['__frozencontext']
 
-    def __init__(self, context: Mapping) -> None:
+    def __init__(self, context):
+        # type: (Mapping) -> None
         self.__frozencontext = {k: copy.copy(v) for k, v in context.items()}
 
     def __getattr__(self, item):
@@ -54,14 +55,16 @@ class Context(collections.MutableMapping):
 
     __slots__ = ['parent', 'map', 'maps']
 
-    def __init__(self, data: Mapping = None, parent: 'Context' = None) -> None:
+    def __init__(self, data=None, parent=None):
+        # type: (Mapping, 'Context') -> None
         self.parent = parent
         self.map = cast(MutableMapping, data) if data else {}
         self.maps = [self.map]
         if parent is not None:
             self.maps += parent.maps
 
-    def new_child(self, data: Mapping = None) -> 'Context':
+    def new_child(self, data=None):
+        # type: (Mapping) -> 'Context'
         """
         Create and return a nested context.
 
@@ -71,7 +74,8 @@ class Context(collections.MutableMapping):
         return Context(data, self)
 
     @property
-    def root(self) -> 'Context':
+    def root(self):
+        # type: () -> 'Context'
         """
         :return: Root context
         """
@@ -84,34 +88,40 @@ class Context(collections.MutableMapping):
                 break
         return m[key]
 
-    def __setitem__(self, key, value) -> None:
+    def __setitem__(self, key, value):
+        # type: (Any, Any) -> None
         for m in self.maps:
             if key in m:
                 m[key] = value
                 return
         self.map[key] = value
 
-    def __delitem__(self, key) -> None:
+    def __delitem__(self, key):
+        # type: (Any) -> None
         for m in self.maps:
             if key in m:
                 del m[key]
                 return
         del self.map[key]
 
-    def __len__(self) -> int:
+    def __len__(self):
+        # type: () -> int
         return len(set(*chain(m.keys() for m in self.maps)))
 
     def __iter__(self):
         return chain.from_iterable(self.maps)
 
-    def __contains__(self, key) -> bool:
+    def __contains__(self, key):
+        # type: (Any) -> bool
         return any(key in m for m in self.maps)
 
-    def __repr__(self) -> str:
+    def __repr__(self):
+        # type: () -> str
         return ' -> '.join(map(repr, self.maps))
 
 
-def create_send_function(event_list: List[Event]) -> Callable[..., None]:
+def create_send_function(event_list):
+    # type: (List[Event]) -> Callable[..., None]
     """
     Create and return a callable that takes a name and additional parameters, builds an InternalEvent,
     and add it into given *event_list*.
@@ -174,7 +184,8 @@ class PythonEvaluator(Evaluator):
     :param initial_context: a dictionary that will be used as *__locals__*
     """
 
-    def __init__(self, interpreter=None, *, initial_context: Mapping[str, Any]=None) -> None:
+    def __init__(self, interpreter=None, *, initial_context=None):
+        # type: (Any, Mapping[str, Any]) -> None
         super().__init__(interpreter, initial_context=initial_context)
 
         self._context = Context(initial_context)
@@ -207,14 +218,16 @@ class PythonEvaluator(Evaluator):
         self._received_event = None  # type: Event
 
     @property
-    def context(self) -> Mapping:
+    def context(self):
+        # type: () -> Mapping
         context = dict(self._context)
         for state, mapping in self._contexts.items():
             for key, value in mapping.map.items():
                 context['{}.{}'.format(state, key)] = value
         return context
 
-    def on_step_starts(self, event: Event = None) -> None:
+    def on_step_starts(self, event=None):
+        # type: (Event) -> None
         """
         Called each time the interpreter starts a macro step.
 
@@ -223,7 +236,8 @@ class PythonEvaluator(Evaluator):
         self._sents_events.clear()
         self._received_event = event
 
-    def context_for(self, name: str) -> Context:
+    def context_for(self, name):
+        # type: (str) -> Context
         """
         Context object for given state name.
 
@@ -232,21 +246,24 @@ class PythonEvaluator(Evaluator):
         """
         return self._contexts[name]
 
-    def _received(self, name: str) -> bool:
+    def _received(self, name):
+        # type: (str) -> bool
         """
         :param name: name of an event
         :return: True if given event name was received in current step.
         """
         return getattr(self._received_event, 'name', None) == name
 
-    def _sent(self, name: str) -> bool:
+    def _sent(self, name):
+        # type: (str) -> bool
         """
         :param name: name of an event
         :return: True if given event name was sent during this step.
         """
         return any((name == e.name for e in self._sents_events))
 
-    def _active(self, name: str) -> bool:
+    def _active(self, name):
+        # type: (str) -> bool
         """
         Return True if given state name is active.
 
@@ -255,7 +272,8 @@ class PythonEvaluator(Evaluator):
         """
         return name in self._interpreter.configuration
 
-    def _after(self, name: str, seconds: float) -> bool:
+    def _after(self, name, seconds):
+        # type: (str, float) -> bool
         """
         Return True if given state was entered more than *seconds* ago.
 
@@ -265,7 +283,8 @@ class PythonEvaluator(Evaluator):
         """
         return self._interpreter.time - seconds >= self._entry_time[name]
 
-    def _idle(self, name: str, seconds: float) -> bool:
+    def _idle(self, name, seconds):
+        # type: (str, float) -> bool
         """
         Return True if given state was the target of a transition more than *seconds* ago.
 
@@ -275,7 +294,8 @@ class PythonEvaluator(Evaluator):
         """
         return self._interpreter.time - seconds >= self._idle_time[name]
 
-    def _evaluate_code(self, code: str, *, additional_context: Mapping = None, context: Mapping = None) -> bool:
+    def _evaluate_code(self, code, *, additional_context=None, context=None):
+        # type: (str, Mapping, Mapping) -> bool
         """
         Evaluate given code using Python.
 
@@ -304,7 +324,8 @@ class PythonEvaluator(Evaluator):
         except Exception as e:
             raise CodeEvaluationError('The above exception occurred while evaluating:\n{}'.format(code)) from e
 
-    def _execute_code(self, code: str, *, additional_context: Mapping = None, context: Mapping = None) -> List[Event]:
+    def _execute_code(self, code, *, additional_context=None, context=None):
+        # type: (str, Mapping, Mapping) -> List[Event]
         """
         Execute given code using Python.
 
@@ -338,7 +359,8 @@ class PythonEvaluator(Evaluator):
         except Exception as e:
             raise CodeEvaluationError('The above exception occurred while executing:\n{}'.format(code)) from e
 
-    def execute_statechart(self, statechart: Statechart) -> List[Event]:
+    def execute_statechart(self, statechart):
+        # type: (Statechart) -> List[Event]
         """
         Execute the initial code of a statechart.
         This method is called at the very beginning of the execution.
@@ -351,7 +373,8 @@ class PythonEvaluator(Evaluator):
         else:
             return []
 
-    def evaluate_guard(self, transition: Transition, event: Event) -> bool:
+    def evaluate_guard(self, transition, event):
+        # type: (Transition, Event) -> bool
         """
         Evaluate the guard for given transition.
 
@@ -368,7 +391,8 @@ class PythonEvaluator(Evaluator):
                                    context=self._contexts[transition.source].new_child(),
                                    additional_context=additional_context)
 
-    def execute_action(self, transition: Transition, event: Event) -> List[Event]:
+    def execute_action(self, transition, event):
+        # type: (Transition, Event) -> List[Event]
         """
         Execute the action for given transition.
         This method is called for every transition that is processed, even those with no *action*.
@@ -383,7 +407,8 @@ class PythonEvaluator(Evaluator):
                                   context=self._contexts[transition.source].new_child(),
                                   additional_context={'event': event})
 
-    def execute_onentry(self, state: StateMixin) -> List[Event]:
+    def execute_onentry(self, state):
+        # type: (StateMixin) -> List[Event]
         """
         Execute the on entry action for given state.
         This method is called for every state that is entered, even those with no *on_entry*.
@@ -396,7 +421,8 @@ class PythonEvaluator(Evaluator):
 
         return self._execute_code(getattr(state, 'on_entry', None), context=self._contexts[state.name])
 
-    def execute_onexit(self, state: StateMixin) -> List[Event]:
+    def execute_onexit(self, state):
+        # type: (StateMixin) -> List[Event]
         """
         Execute the on exit action for given state.
         This method is called for every state that is exited, even those with no *on_exit*.
@@ -406,7 +432,8 @@ class PythonEvaluator(Evaluator):
         """
         return self._execute_code(getattr(state, 'on_exit', None), context=self._contexts[state.name])
 
-    def evaluate_preconditions(self, obj, event: Event = None) -> Iterator[str]:
+    def evaluate_preconditions(self, obj, event=None):
+        # type: (Any, Event) -> Iterator[str]
         """
         Evaluate the preconditions for given object (either a *StateMixin* or a
         *Transition*) and return a list of conditions that are not satisfied.
@@ -434,7 +461,8 @@ class PythonEvaluator(Evaluator):
             getattr(obj, 'preconditions', [])
         )
 
-    def evaluate_invariants(self, obj, event: Event = None) -> Iterator[str]:
+    def evaluate_invariants(self, obj, event=None):
+        # type: (Any, Event) -> Iterator[str]
         """
         Evaluate the invariants for given object (either a *StateMixin* or a
         *Transition*) and return a list of conditions that are not satisfied.
@@ -460,7 +488,8 @@ class PythonEvaluator(Evaluator):
             getattr(obj, 'invariants', [])
         )
 
-    def evaluate_postconditions(self, obj, event: Event = None) -> Iterator[str]:
+    def evaluate_postconditions(self, obj, event=None):
+        # type: (Any, Event) -> Iterator[str]
         """
         Evaluate the postconditions for given object (either a *StateMixin* or a
         *Transition*) and return a list of conditions that are not satisfied.
@@ -486,7 +515,8 @@ class PythonEvaluator(Evaluator):
             getattr(obj, 'postconditions', [])
         )
 
-    def _evaluate_sequential_conditions_for_state(self, state: StateMixin, code: str) -> bool:
+    def _evaluate_sequential_conditions_for_state(self, state, code):
+        # type: (StateMixin, str) -> bool
         context = self._contexts[state.name]
 
         additional_context = {
@@ -498,7 +528,8 @@ class PythonEvaluator(Evaluator):
         }
         return self._evaluate_code(code, context=context, additional_context=additional_context)
 
-    def initialize_sequential_conditions(self, state: StateMixin) -> None:
+    def initialize_sequential_conditions(self, state):
+        # type: (StateMixin) -> None
         """
         Initialize sequential conditions.
 

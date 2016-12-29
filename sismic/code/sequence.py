@@ -8,7 +8,8 @@ from sismic.exceptions import StatechartError
 
 class Sequence(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def evaluate(self, force=False) -> Optional[bool]:
+    def evaluate(self, force=False):
+        # type: (bool) -> Optional[bool]
         raise NotImplementedError()
 
     def __repr__(self):
@@ -21,7 +22,8 @@ class SequenceItem(Sequence):
 
 
 class SequenceUnaryOperator(Sequence):
-    def __init__(self, sequence: Sequence) -> None:
+    def __init__(self, sequence):
+        # type: (Sequence) -> None
         self._sequence = sequence
 
     @property
@@ -36,7 +38,8 @@ class SequenceUnaryOperator(Sequence):
 
 
 class SequenceBinaryOperator(Sequence):
-    def __init__(self, left_sequence: Sequence, right_sequence: Sequence) -> None:
+    def __init__(self, left_sequence, right_sequence):
+        # type: (Sequence, Sequence) -> None
         self._left = left_sequence
         self._right = right_sequence
 
@@ -59,7 +62,8 @@ class SequenceBinaryOperator(Sequence):
 
 
 class SequenceCondition(SequenceItem):
-    def __init__(self, code: str, eval_func: Callable[[str], bool]=None) -> None:
+    def __init__(self, code, eval_func=None):
+        # type: (str, Callable[[str], bool]) -> None
         super().__init__()
         self.code = code
         self._eval_func = eval_func if eval_func else eval
@@ -75,7 +79,8 @@ class SequenceCondition(SequenceItem):
 
 
 class SequenceTimedCondition(SequenceItem):
-    def __init__(self, *truth: List[bool]) -> None:
+    def __init__(self, *truth):
+        # type: (*bool) -> None
         super().__init__()
         self._truth = (t for t in truth)
 
@@ -102,7 +107,8 @@ class SequenceFinish(SequenceItem):
 
 
 class SequenceSometimes(SequenceUnaryOperator):
-    def __init__(self, sequence: Sequence) -> None:
+    def __init__(self, sequence):
+        # type: (Sequence) -> None
         super().__init__(sequence)
         self._satisfied = False
 
@@ -124,7 +130,8 @@ class SequenceNegate(SequenceUnaryOperator):
 
 
 class SequenceAlways(SequenceUnaryOperator):
-    def __init__(self, sequence: Sequence) -> None:
+    def __init__(self, sequence):
+        # type: (Sequence) -> None
         super().__init__(sequence)
         self._unsatisfied = False
 
@@ -141,7 +148,8 @@ class SequenceAlways(SequenceUnaryOperator):
 
 
 class SequenceNever(SequenceUnaryOperator):
-    def __init__(self, sequence: Sequence) -> None:
+    def __init__(self, sequence):
+        # type: (Sequence) -> None
         super().__init__(sequence)
         self._satisfied = False
 
@@ -187,7 +195,8 @@ class SequenceOr(SequenceBinaryOperator):
 
 
 class SequenceThen(SequenceBinaryOperator):
-    def __init__(self, left_sequence: Sequence, right_sequence: Sequence) -> None:
+    def __init__(self, left_sequence, right_sequence):
+        # type: (Sequence, Sequence) -> None
         super().__init__(left_sequence, right_sequence)
         self._left_satisfied = False
 
@@ -199,7 +208,8 @@ class SequenceThen(SequenceBinaryOperator):
             return False if force else None
 
 
-def build_sequence(expression: str, evaluation_function: Callable[[str], bool]=eval) -> Sequence:
+def build_sequence(expression, evaluation_function=eval):
+    # type: (str, Callable[[str], bool]) -> Sequence
     """
     Parse an expression and return the corresponding sequence according to the following mini-language:
 

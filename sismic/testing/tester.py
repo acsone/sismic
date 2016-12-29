@@ -1,4 +1,4 @@
-from typing import Callable, List
+from typing import Any, Callable, List
 
 from sismic import exceptions
 from sismic.interpreter import Interpreter
@@ -8,7 +8,8 @@ from sismic.stories import Pause, Story
 __all__ = ['ExecutionWatcher', 'teststory_from_trace']
 
 
-def _teststory_from_macrostep(macrostep: MacroStep) -> Story:
+def _teststory_from_macrostep(macrostep):
+    # type: (MacroStep) -> Story
     story = Story()
     story.append(Event('step started'))
 
@@ -48,7 +49,8 @@ class ExecutionWatcher:
 
     :param tested_interpreter: Interpreter to watch
     """
-    def __init__(self, tested_interpreter: Interpreter) -> None:
+    def __init__(self, tested_interpreter):
+        # type: (Interpreter) -> None
         self._tested = tested_interpreter
         self._testers = []  # type: List[Interpreter]
         self._failsfast = []  # type: List[bool]
@@ -57,7 +59,8 @@ class ExecutionWatcher:
         self._tested_execute_once_function = tested_interpreter.execute_once
 
     class DynamicContext:
-        def __init__(self, interpreter: Interpreter) -> None:
+        def __init__(self, interpreter):
+            # type: (Interpreter) -> None
             self.__interpreter = interpreter
 
         def __getattr__(self, item):
@@ -69,10 +72,11 @@ class ExecutionWatcher:
         def __copy__(self):
             return None
 
-    def watch_with(self, property_statechart: Statechart,
-                   fails_fast: bool=False,
-                   interpreter_klass: Callable[..., Interpreter]=Interpreter,
-                   **kwargs) -> Interpreter:
+    def watch_with(self, property_statechart,
+                   fails_fast=False,
+                   interpreter_klass=Interpreter,
+                   **kwargs):
+        # type: (Statechart, bool, Callable[..., Interpreter], **Any) -> Interpreter
         """
         Watch the execution of the tested interpreter with given sproperty statechart.
 
@@ -96,7 +100,8 @@ class ExecutionWatcher:
 
         return tester
 
-    def start(self) -> None:
+    def start(self):
+        # type: () -> None
         """
         Send a *started* event to the statechart properties, and starts watching the execution of
         the statechart under test.
@@ -111,7 +116,8 @@ class ExecutionWatcher:
             tester.time = self._tested.time
             tester.queue(Event('execution started')).execute()
 
-    def stop(self) -> None:
+    def stop(self):
+        # type: () -> None
         """
         Send a *stopped* event to the statechart properties, and stops watching the execution of the
         statechart under test.
@@ -126,7 +132,8 @@ class ExecutionWatcher:
         self._started = False
         self._tested.execute_once = self._tested_execute_once_function  # type: ignore
 
-    def __execute_once(self, *args, **kwargs) -> MacroStep:
+    def __execute_once(self, *args, **kwargs):
+        # type: (*Any, **Any) -> MacroStep
         # Execute tester
         time = self._tested.time
         step = self._tested_execute_once_function(*args, **kwargs)  # type: ignore
@@ -143,7 +150,8 @@ class ExecutionWatcher:
         return step
 
 
-def teststory_from_trace(trace: List[MacroStep]) -> Story:
+def teststory_from_trace(trace):
+    # type: (List[MacroStep]) -> Story
     """
     Return a test story based on the given *trace*, a list of macro steps.
     See documentation to see which are the events that are generated.

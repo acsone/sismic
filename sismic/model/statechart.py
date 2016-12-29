@@ -18,7 +18,8 @@ class Statechart:
     :param preamble: code to execute to bootstrap the statechart
     """
 
-    def __init__(self, name: str, description: str=None, preamble: str=None) -> None:
+    def __init__(self, name, description=None, preamble=None):
+        # type: (str, str, str) -> None
         self.name = name
         self.description = description
         self._preamble = preamble
@@ -31,7 +32,8 @@ class Statechart:
         self._children[None] = []  # Root state
 
     @property
-    def root(self) -> Optional[str]:
+    def root(self):
+        # type: () -> Optional[str]
         """
         Root state name
         """
@@ -58,7 +60,8 @@ class Statechart:
         """
         return sorted(self._states.keys())
 
-    def state_for(self, name: str) -> StateMixin:
+    def state_for(self, name):
+        # type: (str) -> StateMixin
         """
         Return the state instance that has given name.
 
@@ -71,7 +74,8 @@ class Statechart:
         except KeyError as e:
             raise StatechartError('State {} does not exist'.format(name)) from e
 
-    def parent_for(self, name: str) -> str:
+    def parent_for(self, name):
+        # type: (str) -> str
         """
         Return the name of the parent of given state name.
 
@@ -84,7 +88,8 @@ class Statechart:
         except KeyError as e:
             raise StatechartError('State {} does not exist'.format(name)) from e
 
-    def children_for(self, name: str) -> List[str]:
+    def children_for(self, name):
+        # type: (str) -> List[str]
         """
         Return the names of the children of the given state.
 
@@ -96,7 +101,8 @@ class Statechart:
 
         return self._children[name]
 
-    def ancestors_for(self, name: str) -> List[str]:
+    def ancestors_for(self, name):
+        # type: (str) -> List[str]
         """
         Return an ordered list of ancestors for the given state.
         Ancestors are ordered by decreasing depth.
@@ -114,7 +120,8 @@ class Statechart:
             parent = self._parent[parent]
         return ancestors
 
-    def descendants_for(self, name: str) -> List[str]:
+    def descendants_for(self, name):
+        # type: (str) -> List[str]
         """
         Return an ordered list of descendants for the given state.
         Descendants are ordered by increasing depth.
@@ -134,7 +141,8 @@ class Statechart:
                 descendants.append(child)
         return descendants
 
-    def depth_for(self, name: str) -> int:
+    def depth_for(self, name):
+        # type: (str) -> int
         """
         Return the depth of given state (1-indexed).
 
@@ -147,7 +155,8 @@ class Statechart:
         ancestors = self.ancestors_for(name)
         return len(ancestors) + 1
 
-    def least_common_ancestor(self, name_first: str, name_second: str) -> str:
+    def least_common_ancestor(self, name_first, name_second):
+        # type: (str, str) -> str
         """
         Return the deepest common ancestor for *s1* and *s2*, or *None* if
         there is no common ancestor except root (top-level) state.
@@ -166,7 +175,8 @@ class Statechart:
             if state in s2_anc:
                 return state
 
-    def leaf_for(self, names: Iterable[str]) -> List[str]:
+    def leaf_for(self, names):
+        # type (Iterable[str]) -> List[str]
         """
         Return the leaves of *names*.
 
@@ -197,7 +207,8 @@ class Statechart:
         """
         return list(self._transitions)
 
-    def add_transition(self, transition: Transition) -> None:
+    def add_transition(self, transition):
+        # type: (Transition) -> None
         """
         Register given transition and register it on the source state
 
@@ -220,7 +231,8 @@ class Statechart:
 
         self._transitions.append(transition)
 
-    def remove_transition(self, transition: Transition) -> None:
+    def remove_transition(self, transition):
+        # type: (Transition) -> None
         """
         Remove given transitions.
 
@@ -232,7 +244,8 @@ class Statechart:
         except ValueError:
             raise StatechartError('Transition {} does not exist'.format(transition))
 
-    def rotate_transition(self, transition: Transition, new_source: str='', new_target: Optional[str]='') -> None:
+    def rotate_transition(self, transition, new_source='', new_target=''):
+        # type: (Transition, str, Optional[str]) -> None
         """
         Rotate given transition.
 
@@ -267,7 +280,8 @@ class Statechart:
                 new_target_state = self.state_for(new_target)
                 transition._target = new_target_state.name
 
-    def transitions_from(self, source: str) -> List[Transition]:
+    def transitions_from(self, source):
+        # type: (str) -> List[Transition]
         """
         Return the list of transitions whose source is given name.
 
@@ -283,7 +297,8 @@ class Statechart:
                 transitions.append(transition)
         return transitions
 
-    def transitions_to(self, target: str) -> List[Transition]:
+    def transitions_to(self, target):
+        # type: (str) -> List[Transition]
         """
         Return the list of transitions whose target is given name.
         Internal transitions are returned too.
@@ -300,7 +315,8 @@ class Statechart:
                 transitions.append(transition)
         return transitions
 
-    def transitions_with(self, event: str) -> List[Transition]:
+    def transitions_with(self, event):
+        # type: (str) -> List[Transition]
         """
         Return the list of transitions that can be triggered by given event name.
 
@@ -315,7 +331,8 @@ class Statechart:
 
     # ######### EVENTS ##########
 
-    def events_for(self, name_or_names: Union[str, List[str]]=None) -> List[str]:
+    def events_for(self, name_or_names=None):
+        # type: (Union[str, List[str]]) -> List[str]
         """
         Return a list containing the name of every event that guards a transition in this statechart.
 
@@ -343,7 +360,8 @@ class Statechart:
 
     # ######### STRUCTURAL CHANGES ##########
 
-    def add_state(self, state: StateMixin, parent: Optional[str]) -> None:
+    def add_state(self, state, parent):
+        # type: (StateMixin, Optional[str]) -> None
         """
         Add given state (a *StateMixin* instance) on given parent (its name as an *str*).
         If given state should be use as a root state, set *parent* to None.
@@ -381,7 +399,8 @@ class Statechart:
         self._children[state.name] = []
         self._children[parent].append(state.name)
 
-    def remove_state(self, name: str) -> None:
+    def remove_state(self, name):
+        # type: (str) -> None
         """
         Remove given state.
 
@@ -417,7 +436,8 @@ class Statechart:
 
         self._children[parent].remove(name)
 
-    def rename_state(self, old_name: str, new_name: str) -> None:
+    def rename_state(self, old_name, new_name):
+        # type: (str, str) -> None
         """
         Change state name, and adapt transitions, initial state, memory, etc.
 
@@ -469,7 +489,8 @@ class Statechart:
         # Rename state!
         state._name = new_name
 
-    def move_state(self, name: str, new_parent: str) -> None:
+    def move_state(self, name, new_parent):
+        # type: (str, str) -> None
         """
         Move given state (and its children) such that its new parent is *new_parent*.
 
@@ -509,8 +530,9 @@ class Statechart:
                 if other_state.memory == name:
                     other_state.memory = None
 
-    def copy_from_statechart(self, statechart: 'Statechart', source: str,
-                             *, replace: str, renaming_func: Callable[[str], str]=lambda s: s) -> None:
+    def copy_from_statechart(self, statechart, source,
+                             *, replace, renaming_func=lambda s: s):
+        # type: ('Statechart', str, str, Callable[[str], str]) -> None
         """
         Copy (a part of) given *statechart* into current one.
 
@@ -557,7 +579,8 @@ class Statechart:
 
     # ######### VALIDATION ##########
 
-    def _validate_compoundstate_initial(self) -> bool:
+    def _validate_compoundstate_initial(self):
+        # type: () -> bool
         """
         Checks that every *CompoundState*'s initial state refer to one of its children
 
@@ -572,7 +595,8 @@ class Statechart:
                     raise StatechartError('Initial state {} of {} must be a child state'.format(state.initial, state))
         return True
 
-    def _validate_historystate_memory(self) -> bool:
+    def _validate_historystate_memory(self):
+        # type: () -> bool
         """
         Checks that every *HistoryStateMixin*'s memory refer to one of its parent's children, except itself.
 
@@ -594,7 +618,8 @@ class Statechart:
                     )
         return True
 
-    def validate(self) -> bool:
+    def validate(self):
+        # type: () -> bool
         """
         Checks that every *CompoundState*'s initial state refer to one of its children
         Checks that every *HistoryStateMixin*'s memory refer to one of its parent's children

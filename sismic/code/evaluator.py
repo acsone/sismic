@@ -25,19 +25,22 @@ class Evaluator(metaclass=abc.ABCMeta):
     :param initial_context: an optional dictionary to populate the context
     """
     @abc.abstractmethod
-    def __init__(self, interpreter=None, *, initial_context: Mapping[str, Any]=None) -> None:
+    def __init__(self, interpreter=None, *, initial_context=None):
+        # type: (Any, Mapping[str, Any]) -> None
         self._condition_sequences = {}  # type: Dict[str, Dict[str, Sequence]]
 
     @property
     @abc.abstractmethod
-    def context(self) -> Mapping[str, Any]:
+    def context(self):
+        # type: () -> Mapping[str, Any]
         """
         The context of this evaluator. A context is a dict-like mapping between
         variables and values that is expected to be exposed when the code is evaluated.
         """
         raise NotImplementedError()
 
-    def on_step_starts(self, event: Event=None) -> None:
+    def on_step_starts(self, event=None):
+        # type: (Event) -> None
         """
         Called each time the interpreter starts a macro step.
 
@@ -46,7 +49,8 @@ class Evaluator(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def _evaluate_code(self, code: str, *, additional_context: Mapping[str, Any]=None) -> bool:
+    def _evaluate_code(self, code, *, additional_context=None):
+        # type: (str, Mapping[str, Any]) -> bool
         """
         Generic method to evaluate a piece of code. This method is a fallback if one of
         the other evaluate_* methods is not overridden.
@@ -58,7 +62,8 @@ class Evaluator(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def _execute_code(self, code: str, *, additional_context: Mapping[str, Any]=None) -> List[Event]:
+    def _execute_code(self, code, *, additional_context=None):
+        # type: (str, Mapping[str, Any]) -> List[Event]
         """
         Generic method to execute a piece of code. This method is a fallback if one
         of the other execute_* methods is not overridden.
@@ -69,7 +74,8 @@ class Evaluator(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError()
 
-    def execute_statechart(self, statechart: Statechart) -> List[Event]:
+    def execute_statechart(self, statechart):
+        # type: (Statechart) -> List[Event]
         """
         Execute the initial code of a statechart.
         This method is called at the very beginning of the execution.
@@ -82,7 +88,8 @@ class Evaluator(metaclass=abc.ABCMeta):
         else:
             return []
 
-    def evaluate_guard(self, transition: Transition, event: Event) -> bool:
+    def evaluate_guard(self, transition, event):
+        # type: (Transition, Event) -> bool
         """
         Evaluate the guard for given transition.
 
@@ -93,7 +100,8 @@ class Evaluator(metaclass=abc.ABCMeta):
         if transition.guard:
             return self._evaluate_code(transition.guard, additional_context={'event': event})
 
-    def execute_action(self, transition: Transition, event: Event) -> List[Event]:
+    def execute_action(self, transition, event):
+        # type: (Transition, Event) -> List[Event]
         """
         Execute the action for given transition.
         This method is called for every transition that is processed, even those with no *action*.
@@ -107,7 +115,8 @@ class Evaluator(metaclass=abc.ABCMeta):
         else:
             return []
 
-    def execute_onentry(self, state: StateMixin) -> List[Event]:
+    def execute_onentry(self, state):
+        # type: (StateMixin) -> List[Event]
         """
         Execute the on entry action for given state.
         This method is called for every state that is entered, even those with no *on_entry*.
@@ -120,7 +129,8 @@ class Evaluator(metaclass=abc.ABCMeta):
         else:
             return []
 
-    def execute_onexit(self, state: StateMixin) -> List[Event]:
+    def execute_onexit(self, state):
+        # type: (StateMixin) -> List[Event]
         """
         Execute the on exit action for given state.
         This method is called for every state that is exited, even those with no *on_exit*.
@@ -133,7 +143,8 @@ class Evaluator(metaclass=abc.ABCMeta):
         else:
             return []
 
-    def evaluate_preconditions(self, obj, event: Event=None) -> Iterable[str]:
+    def evaluate_preconditions(self, obj, event=None):
+        # type: (Any, Event) -> Iterable[str]
         """
         Evaluate the preconditions for given object (either a *StateMixin* or a
         *Transition*) and return a list of conditions that are not satisfied.
@@ -147,7 +158,8 @@ class Evaluator(metaclass=abc.ABCMeta):
             lambda c: not self._evaluate_code(c, additional_context=event_d), getattr(obj, 'preconditions', [])
         )
 
-    def evaluate_invariants(self, obj, event: Event=None) -> Iterable[str]:
+    def evaluate_invariants(self, obj, event=None):
+        # type: (Any, Event) -> Iterable[str]
         """
         Evaluate the invariants for given object (either a *StateMixin* or a
         *Transition*) and return a list of conditions that are not satisfied.
@@ -161,7 +173,8 @@ class Evaluator(metaclass=abc.ABCMeta):
             lambda c: not self._evaluate_code(c, additional_context=event_d), getattr(obj, 'invariants', [])
         )
 
-    def evaluate_postconditions(self, obj, event: Event=None) -> Iterable[str]:
+    def evaluate_postconditions(self, obj, event=None):
+        # type: (Any, Event) -> Iterable[str]
         """
         Evaluate the postconditions for given object (either a *StateMixin* or a
         *Transition*) and return a list of conditions that are not satisfied.
@@ -175,7 +188,8 @@ class Evaluator(metaclass=abc.ABCMeta):
             lambda c: not self._evaluate_code(c, additional_context=event_d), getattr(obj, 'postconditions', [])
         )
 
-    def initialize_sequential_conditions(self, state: StateMixin) -> None:
+    def initialize_sequential_conditions(self, state):
+        # type: (StateMixin) -> None
         """
         Initialize sequential conditions.
 
@@ -188,7 +202,8 @@ class Evaluator(metaclass=abc.ABCMeta):
 
         self._condition_sequences[state.name] = condition_mapping
 
-    def update_sequential_conditions(self, state: StateMixin) -> Iterable[str]:
+    def update_sequential_conditions(self, state):
+        # type: (StateMixin) -> Iterable[str]
         """
         Update sequential conditions, and return a list of already unsatisfied conditions.
 
@@ -203,7 +218,8 @@ class Evaluator(metaclass=abc.ABCMeta):
                 returned_conditions.append(condition)
         return returned_conditions
 
-    def evaluate_sequential_conditions(self, state: StateMixin) -> Iterable[str]:
+    def evaluate_sequential_conditions(self, state):
+        # type: (StateMixin) -> Iterable[str]
         """
         Evaluate sequential conditions, and return a list of unsatisfied conditions.
 

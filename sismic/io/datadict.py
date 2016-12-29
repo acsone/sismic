@@ -10,7 +10,8 @@ from sismic.model import (ActionStateMixin, BasicState, CompositeStateMixin,
 __all__ = ['import_from_dict', 'export_to_dict']
 
 
-def import_from_dict(data: Mapping[str, Any]) -> Statechart:
+def import_from_dict(data):
+    # type: (Mapping[str, Any]) -> Statechart
     data = data['statechart']
 
     statechart = Statechart(name=data['name'],
@@ -61,7 +62,8 @@ def import_from_dict(data: Mapping[str, Any]) -> Statechart:
     return statechart
 
 
-def _import_transition_from_dict(state_name: str, transition_d: Mapping[str, Any]) -> Transition:
+def _import_transition_from_dict(state_name, transition_d):
+    # type: (str, Mapping[str, Any]) -> Transition
     """
     Return a Transition instance from given dict.
 
@@ -85,7 +87,8 @@ def _import_transition_from_dict(state_name: str, transition_d: Mapping[str, Any
     return transition
 
 
-def _import_state_from_dict(state_d: Mapping[str, Any]) -> StateMixin:
+def _import_state_from_dict(state_d):
+    # type: (Mapping[str, Any]) -> StateMixin
     """
     Return the appropriate type of state from given dict.
 
@@ -129,7 +132,8 @@ def _import_state_from_dict(state_d: Mapping[str, Any]) -> StateMixin:
     return state
 
 
-def export_to_dict(statechart: Statechart, ordered=True) -> Mapping[str, Any]:
+def export_to_dict(statechart, ordered=True):
+    # type: (Statechart, bool) -> Mapping[str, Any]
     """
     Export given StateChart instance to a dict.
 
@@ -149,7 +153,8 @@ def export_to_dict(statechart: Statechart, ordered=True) -> Mapping[str, Any]:
     return {'statechart': d}
 
 
-def _export_state_to_dict(statechart: Statechart, state_name: str, ordered=True) -> Mapping[str, Any]:
+def _export_state_to_dict(statechart, state_name, ordered=True):
+    # type: (Statechart, str, bool) -> Mapping[str, Any]
     data = OrderedDict() if ordered else {}
 
     state = statechart.state_for(state_name)

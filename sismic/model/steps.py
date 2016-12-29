@@ -23,8 +23,9 @@ class MicroStep:
 
     __slots__ = ['event', 'transition', 'entered_states', 'exited_states', 'sent_events']
 
-    def __init__(self, event: Event=None, transition: Transition=None, entered_states: List[str]=None,
-                 exited_states: List[str]=None, sent_events: List[Event]=None) -> None:
+    def __init__(self, event=None, transition=None, entered_states=None,
+                 exited_states=None, sent_events=None):
+        # type: (Event, Transition, List[str], List[str], List[Event]) -> None
         self.event = event
         self.transition = transition
         self.entered_states = entered_states if entered_states else []  # type: List[str]
@@ -54,28 +55,32 @@ class MacroStep:
     :param steps: a list of *MicroStep* instances
     """
 
-    def __init__(self, time: float, steps: List[MicroStep]) -> None:
+    def __init__(self, time, steps):
+        # type: (float,List[MicroStep]) -> None
         self._time = time
         self._steps = steps
 
     __slots__ = ['_time', '_steps']
 
     @property
-    def steps(self) -> List[MicroStep]:
+    def steps(self):
+        # type: () -> List[MicroStep]
         """
         List of micro steps
         """
         return self._steps
 
     @property
-    def time(self) -> float:
+    def time(self):
+        # type: () -> float
         """
         Time at which this step was executed.
         """
         return self._time
 
     @property
-    def event(self) -> Event:
+    def event(self):
+        # type: () -> Event
         """
         Event (or *None*) that was consumed.
         """
@@ -85,14 +90,16 @@ class MacroStep:
         return None
 
     @property
-    def transitions(self) -> List[Transition]:
+    def transitions(self):
+        # type: () -> List[Transition]
         """
         A (possibly empty) list of transitions that were triggered.
         """
         return [step.transition for step in self._steps if step.transition]
 
     @property
-    def entered_states(self) -> List[str]:
+    def entered_states(self):
+        # type: () -> List[str]
         """
         List of the states names that were entered.
         """
@@ -102,7 +109,8 @@ class MacroStep:
         return states
 
     @property
-    def exited_states(self) -> List[str]:
+    def exited_states(self):
+        # type: () -> List[str]
         """
         List of the states names that were exited.
         """
@@ -112,7 +120,8 @@ class MacroStep:
         return states
 
     @property
-    def sent_events(self) -> List[Event]:
+    def sent_events(self):
+        # type: () -> List[Event]
         """
         List of events that were sent during this step.
         """

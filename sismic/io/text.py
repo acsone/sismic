@@ -6,7 +6,8 @@ from sismic.model import Statechart
 __all__ = ['export_to_tree']
 
 
-def export_to_tree(statechart: Statechart, spaces: int=3) -> List[str]:
+def export_to_tree(statechart, spaces=3):
+    # type: (Statechart, int) -> List[str]
     """
     Provides a textual representation of the hierarchy of states belonging to
     a statechart. Only states are represented.
@@ -15,7 +16,8 @@ def export_to_tree(statechart: Statechart, spaces: int=3) -> List[str]:
     :param spaces: spaces needed to indent a nested state
     :return: A list of lines, representation of the hierarchy of states belonging to a statechart.
     """
-    def to_tree(state: str) -> List[str]:
+    def to_tree(state):
+        # type: (str) -> List[str]
         children = sorted(statechart.children_for(state))  # type: List[str]
 
         trees = map(to_tree, children)

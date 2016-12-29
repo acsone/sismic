@@ -10,7 +10,8 @@ from .interpreter import Interpreter
 __all__ = ['log_trace', 'run_in_background']
 
 
-def log_trace(interpreter: Interpreter) -> List[model.MacroStep]:
+def log_trace(interpreter):
+    # type: (Interpreter) -> List[model.MacroStep]
     """
     Return a list that will be populated by each value returned by the *execute_once* method
     of given interpreter.
@@ -32,9 +33,8 @@ def log_trace(interpreter: Interpreter) -> List[model.MacroStep]:
     return trace
 
 
-def run_in_background(interpreter: Interpreter,
-                      delay: float=0.05,
-                      callback: Callable[[List[model.MacroStep]], Any]=None) -> threading.Thread:
+def run_in_background(interpreter, delay=0.05, callback=None):
+    # type: (Interpreter, float, Callable[[List[model.MacroStep]], Any]) -> threading.Thread
     """
     Run given interpreter in background. The time is updated according to
     *time.time() - starttime*. The interpreter is ran until it reaches a final configuration.
@@ -68,7 +68,8 @@ def run_in_background(interpreter: Interpreter,
     return thread
 
 
-def coverage_from_trace(trace: List[model.MacroStep]) -> Tuple[Counter, Counter]:
+def coverage_from_trace(trace):
+    # type: (List[model.MacroStep]) -> Tuple[Counter, Counter]
     """
     Given a list of macro steps considered as the trace of a statechart execution, return a 2-uple
     of *Counter* objects. The first one counts the states (as strings) that were visited, and the second one

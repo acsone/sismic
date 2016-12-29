@@ -15,7 +15,8 @@ class Event:
 
     __slots__ = ['name', 'data']
 
-    def __init__(self, name: str, **additional_parameters: Any) -> None:
+    def __init__(self, name, **additional_parameters):
+        # type: (str, **Any) -> None
         self.name = name
         self.data = additional_parameters
 

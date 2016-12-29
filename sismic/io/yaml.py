@@ -44,7 +44,8 @@ class SCHEMA:
     }
 
 
-def import_from_yaml(statechart: Iterable[str], ignore_schema: bool=False, ignore_validation: bool=False) -> Statechart:
+def import_from_yaml(statechart, ignore_schema=False, ignore_validation=False):
+    # type: (Iterable[str], bool, bool) -> Statechart
     """
     Import a statechart from a YAML representation.
 
@@ -71,7 +72,8 @@ def import_from_yaml(statechart: Iterable[str], ignore_schema: bool=False, ignor
     return sc
 
 
-def export_to_yaml(statechart: Statechart) -> str:
+def export_to_yaml(statechart):
+    # type: (Statechart) -> str
     """
     Export given *Statechart* instance to YAML
 
