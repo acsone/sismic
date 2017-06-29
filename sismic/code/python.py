@@ -213,9 +213,9 @@ class PythonEvaluator(Evaluator):
                 self._contexts[name] = self._contexts[parent_name].new_child()
 
         # Intercept sent and received events
-        self._sents_events = []  # type: List[Event]
+        self._sent_events = []  # type: List[Event]
         if self._interpreter is not None:
-            self._interpreter.bind(self._sents_events.append)
+            self._interpreter.bind(self._sent_events.append)
         self._received_event = None  # type: Event
 
     @property
@@ -234,7 +234,7 @@ class PythonEvaluator(Evaluator):
 
         :param event: Optional processed event
         """
-        self._sents_events[:] = []
+        self._sent_events[:] = []
         self._received_event = event
 
     def context_for(self, name):
@@ -261,7 +261,7 @@ class PythonEvaluator(Evaluator):
         :param name: name of an event
         :return: True if given event name was sent during this step.
         """
-        return any((name == e.name for e in self._sents_events))
+        return any((name == e.name for e in self._sent_events))
 
     def _active(self, name):
         # type: (str) -> bool
